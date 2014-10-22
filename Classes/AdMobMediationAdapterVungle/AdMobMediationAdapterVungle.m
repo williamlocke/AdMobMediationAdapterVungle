@@ -1,23 +1,22 @@
 //
-//  AdMobMediationAdapterChartboost.m
+//  AdMobMediationAdapterVungle.m
 //
 //  Created by William Locke on 3/5/13.
 //
 //
 
-#import "AdMobMediationAdapterChartboost.h"
+#import "AdMobMediationAdapterVungle.h"
 #import "GADBannerView.h"
 #import "NFChartboost.h"
 #import "GADCustomEventInterstitial.h"
 #import "VGVunglePub.h"
 
-
-@interface AdMobMediationAdapterChartboost()<VGVunglePubDelegate>{
+@interface AdMobMediationAdapterVungle()<VGVunglePubDelegate>{
     
 }
 @end
 
-@implementation AdMobMediationAdapterChartboost
+@implementation AdMobMediationAdapterVungle
 
 @synthesize delegate;
 
@@ -35,6 +34,23 @@
     }
     
     return rootViewController;
+}
+
++(instancetype)sharedInstance
+{
+    // structure used to test whether the block has completed or not
+    static dispatch_once_t p = 0;
+    
+    // initialize sharedObject as nil (first call only)
+    __strong static id _sharedObject = nil;
+    
+    // executes a block object once and only once for the lifetime of an application
+    dispatch_once(&p, ^{
+        _sharedObject = [[self alloc] init];
+    });
+    
+    // returns the same object each time
+    return _sharedObject;
 }
 
 #pragma mark -

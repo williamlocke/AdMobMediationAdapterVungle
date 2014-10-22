@@ -1,5 +1,5 @@
 //
-//  AdMobMediationAdapterChartboost.h
+//  AdMobMediationAdapterVungle.h
 //
 //  Created by William Locke on 3/5/13.
 //
@@ -11,10 +11,18 @@
 #import "GADInterstitialDelegate.h"
 #import "GADCustomEventInterstitial.h"
 
-@class AdMobMediationAdapterChartboost;
+@class AdMobMediationAdapterVungle;
 
 
-@interface AdMobMediationAdapterChartboost : NSObject<GADCustomEventInterstitial>
+
+@interface AdMobMediationAdapterVungle : NSObject<GADCustomEventInterstitial>
+
+
++(instancetype)sharedInstance;
+
+- (void)requestInterstitialAdWithParameter:(NSString *)serverParameter
+                                     label:(NSString *)serverLabel
+                                   request:(GADCustomEventRequest *)customEventRequest;
 
 //@property (nonatomic, strong) id delegate;
 
