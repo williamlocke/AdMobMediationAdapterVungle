@@ -9,9 +9,9 @@
 #import "GADBannerView.h"
 #import "NFChartboost.h"
 #import "GADCustomEventInterstitial.h"
-#import "VGVunglePub.h"
+#import <VungleSDK/VungleSDK.h>
 
-@interface AdMobMediationAdapterVungle()<VGVunglePubDelegate>{
+@interface AdMobMediationAdapterVungle()<VungleSDKDelegate>{
     
 }
 @end
@@ -60,81 +60,66 @@
                                      label:(NSString *)serverLabel
                                    request:(GADCustomEventRequest *)customEventRequest {
     
-    [VGVunglePub setDelegate:self];
+
+    [[VungleSDK sharedSDK] setDelegate:self];
     
-    if ([VGVunglePub adIsAvailable]) {
-        [self.delegate customEventInterstitial:self didReceiveAd:nil];
+    UIViewController *rootViewController = [self applicationsCurrentRootViewController];
+    
+    if ([[VungleSDK sharedSDK] isCachedAdAvailable]) {
         [self.delegate customEventInterstitialWillPresent:self];
-        UIViewController *rootViewController = [self applicationsCurrentRootViewController];
-        [VGVunglePub playIncentivizedAd:rootViewController animated:YES showClose:YES userTag:nil];
-        
+        [self.delegate customEventInterstitial:self didReceiveAd:nil];
+        [[VungleSDK sharedSDK] playAd:rootViewController];
     }else{
         [self.delegate customEventInterstitial:self didFailAd:nil];
     }
+
     
-    NSLog(@"test vungle");
 
 }
 
 - (void)presentFromRootViewController:(UIViewController *)rootViewController {
     NSLog(@"present");
-    //[interstitial_ presentFromRootViewController:rootViewController];
     
 }
 
 
-#pragma mark DVAdKitDelegate
 #pragma mark vungle delegate methods
-static BOOL finished_last_vungle_video_ = NO;
-
-- (void)vungleMoviePlayed:(VGPlayData*)playData
-{
-    NSLog(@"vungleMoviePlayed: %@", playData);
-    if ([playData playedFull]) {
-        finished_last_vungle_video_ = YES;
-    }
+/**
+ * if implemented, this will get called when the SDK is about to show an ad. This point
+ * might be a good time to pause your game, and turn off any sound you might be playing.
+ */
+- (void)vungleSDKwillShowAd{
+    
 }
 
-- (void)vungleStatusUpdate:(VGStatusData*)statusData
-{
-    NSLog(@"vungleStatusUpdate: %@", statusData);
-}
-
-- (void)vungleViewDidDisappear:(UIViewController*)viewController
-{
-    NSLog(@"vungleViewDidDisappear");
-    if (finished_last_vungle_video_) {
-        NSLog(@"vungle award coins!!!!");
-        finished_last_vungle_video_ = NO;
-    }
+/**
+ * if implemented, this will get called when the SDK closes the ad view, but there might be
+ * a product sheet that will be presented. This point might be a good place to resume your game
+ * if there's no product sheet being presented. The viewInfo dictionary will contain the
+ * following keys:
+ * - "completedView": NSNumber representing a BOOL whether or not the video can be considered a
+ *               full view.
+ * - "playTime": NSNumber representing the time in seconds that the user watched the video.
+ * - "didDownlaod": NSNumber representing a BOOL whether or not the user clicked the download
+ *                  button.
+ */
+- (void)vungleSDKwillCloseAdWithViewInfo:(NSDictionary*)viewInfo willPresentProductSheet:(BOOL)willPresentProductSheet{
     [self.delegate customEventInterstitialDidDismiss:self];
 }
 
-- (void)vungleViewDidDisappear:(UIViewController*)viewController willShowProductView:(BOOL)willShow
-{
-    NSLog(@"vungleViewDidDisappear:willShowProductView:");
-    NSLog(@"vungleViewDidDisappear");
-    if (finished_last_vungle_video_) {
-        NSLog(@"vungle award coins!!!!");
-        finished_last_vungle_video_ = NO;
-    }
-    [self.delegate customEventInterstitialDidDismiss:self];
+/**
+ * if implemented, this will get called when the product sheet is about to be closed.
+ */
+- (void)vungleSDKwillCloseProductSheet:(id)productSheet{
+    
 }
 
-- (void)vungleViewWillAppear:(UIViewController*)viewController
-{
-    NSLog(@"vungleViewWillAppear");
+/**
+ * if implemented, this will get called when there is an ad cached and ready to be shown.
+ */
+- (void)vungleSDKhasCachedAdAvailable{
+    
 }
 
-- (void)vungleAppStoreWillAppear
-{
-    NSLog(@"vungleAppStoreWillAppear");
-    [self.delegate customEventInterstitialWillLeaveApplication:self];
-}
 
-- (void)vungleAppStoreViewDidDisappear
-{
-    NSLog(@"vungleAppStoreViewDidDisappear");
-    [self.delegate customEventInterstitialDidDismiss:self];
-}
 @end
