@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   
 	s.dependency 'Google-AdMob-Ads-SDK'
-	s.dependency 'Vungle'
+	s.dependency 'VungleAdvertiserSDK'
 	
   
 end
