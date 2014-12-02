@@ -64,10 +64,20 @@
     
     UIViewController *rootViewController = [self applicationsCurrentRootViewController];
 
-    [self.delegate customEventInterstitialWillPresent:self];
-    [self.delegate customEventInterstitial:self didReceiveAd:nil];
-    [[VungleSDK sharedSDK] playAd:rootViewController];
+    [[VungleSDK sharedSDK] setLoggingEnabled:YES];
     
+//    [self.delegate customEventInterstitialWillPresent:self];
+//    [self.delegate customEventInterstitial:self didReceiveAd:nil];
+//    [[VungleSDK sharedSDK] playAd:rootViewController];
+    
+    
+    if ([[VungleSDK sharedSDK] isCachedAdAvailable]) {
+        [self.delegate customEventInterstitialWillPresent:self];
+        [self.delegate customEventInterstitial:self didReceiveAd:nil];
+        [[VungleSDK sharedSDK] playAd:rootViewController];
+    }else{
+        [self.delegate customEventInterstitial:self didFailAd:nil];
+    }
 
     
 
