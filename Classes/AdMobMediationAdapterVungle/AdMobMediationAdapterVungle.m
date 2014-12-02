@@ -7,7 +7,6 @@
 
 #import "AdMobMediationAdapterVungle.h"
 #import "GADBannerView.h"
-#import "NFChartboost.h"
 #import "GADCustomEventInterstitial.h"
 #import <VungleSDK/VungleSDK.h>
 
@@ -64,14 +63,11 @@
     [[VungleSDK sharedSDK] setDelegate:self];
     
     UIViewController *rootViewController = [self applicationsCurrentRootViewController];
+
+    [self.delegate customEventInterstitialWillPresent:self];
+    [self.delegate customEventInterstitial:self didReceiveAd:nil];
+    [[VungleSDK sharedSDK] playAd:rootViewController];
     
-    if ([[VungleSDK sharedSDK] isCachedAdAvailable]) {
-        [self.delegate customEventInterstitialWillPresent:self];
-        [self.delegate customEventInterstitial:self didReceiveAd:nil];
-        [[VungleSDK sharedSDK] playAd:rootViewController];
-    }else{
-        [self.delegate customEventInterstitial:self didFailAd:nil];
-    }
 
     
 
